@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=VVDS+Fifties&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'VVDS Fifties';
+            background-color: #e0f7fa; /* Light cool blue background */
+            color: #004d40; /* Dark cool blue text */
+            transition: margin-left .5s;
+        }
+        .sidebar {
+            height: 100%;
+            width: 250px; /* Sidebar width */
+            position: fixed;
+            top: 0;
+            left: -250px; /* Hide sidebar */
+            background-color: #00796b; /* Sidebar background color */
+            overflow-x: hidden;
+            transition: 0.5s; /* Transition effect */
+            padding-top: 60px;
+        }
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 1.1em;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #004d40; /* Sidebar link hover color */
+        }
+        .open-btn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #007bff; /* Button color */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .main-content {
+            margin-left: 10px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar" class="sidebar">
+        <a href="#" onclick="toggleSidebar()"> |☰| &times;</a>
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        <a href="/expired_products">Expired Products</a>
+        <a href="/near_expiry">Products Near Expiry</a>
+        <a href="/shopping_list">Shopping List</a>
+    </div>
+
+    <div id="main" class="main-content">
+        <button class="open-btn" onclick="toggleSidebar()">☰ </button>
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            if (sidebar.style.left === "-250px") {
+                sidebar.style.left = "0";
+            } else {
+                sidebar.style.left = "-250px";
+            }
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #ffffff; /* Light cool blue background */
+            color: #004d40; /* Dark cool blue text */
+            font-size: 22px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Welcome to the Inventory Management System</h1>
+        <a href="/products" class="btn btn-primary mt-3">Get Started</a>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

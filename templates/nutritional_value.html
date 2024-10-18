@@ -1,0 +1,318 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Nutritional Value</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 40vh;
+            width: 40vw;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Nutritional Values</h1>
+        
+        <div class="chart-container">
+            <canvas id="nutritionPieChart"></canvas>
+        </div>
+        
+        <h3>Details</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Nutrient</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Calories</td>
+                    <td>{{ calories }}</td>
+                </tr>
+                <tr>
+                    <td>Protein</td>
+                    <td>{{ protein }} g</td>
+                </tr>
+                <tr>
+                    <td>Fat</td>
+                    <td>{{ fat }} g</td>
+                </tr>
+                <tr>
+                    <td>Carbohydrates</td>
+                    <td>{{ carbohydrates }} g</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('nutritionPieChart').getContext('2d');
+        const nutritionPieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Calories', 'Protein', 'Fat', 'Carbohydrates'],
+                datasets: [{
+                    label: 'Nutritional Values',
+                    data: [
+                        {{ calories }},
+                        {{ protein }},
+                        {{ fat }},
+                        {{ carbohydrates }}
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw + (tooltipItem.label === 'Calories' ? ' cal' : ' g');
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+ -->
+
+
+
+ <!-- <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+     <title>Nutritional Value</title>
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     <style>
+         .chart-container {
+             position: relative;
+             margin: auto;
+             height: 40vh;
+             width: 40vw;
+         }
+     </style>
+ </head>
+ <body>
+     <div class="container mt-5">
+         <h1>Nutritional Values</h1>
+         <form method="POST">
+             <div class="form-group">
+                 <label for="quantity">Enter quantity consumed (in appropriate units):</label>
+                 <input type="number" class="form-control" id="quantity" name="quantity" step="0.1" required>
+             </div>
+             <button type="submit" class="btn btn-primary">Calculate Nutritional Values</button>
+         </form>
+
+         {% if quantity > 0 %}
+         <div class="chart-container">
+             <canvas id="nutritionPieChart"></canvas>
+         </div>
+
+         <h3>Details for {{ quantity }} units</h3>
+         <table class="table table-bordered">
+             <thead>
+                 <tr>
+                     <th>Nutrient</th>
+                     <th>Quantity</th>
+                 </tr>
+             </thead>
+             <tbody>
+                 <tr>
+                     <td>Calories</td>
+                     <td>{{ total_calories }} cal</td>
+                 </tr>
+                 <tr>
+                     <td>Protein</td>
+                     <td>{{ total_protein }} g</td>
+                 </tr>
+                 <tr>
+                     <td>Fat</td>
+                     <td>{{ total_fat }} g</td>
+                 </tr>
+                 <tr>
+                     <td>Carbohydrates</td>
+                     <td>{{ total_carbohydrates }} g</td>
+                 </tr>
+             </tbody>
+         </table>
+         {% endif %}
+     </div>
+
+     <script>
+         const ctx = document.getElementById('nutritionPieChart').getContext('2d');
+         const nutritionPieChart = new Chart(ctx, {
+             type: 'pie',
+             data: {
+                 labels: ['Calories', 'Protein', 'Fat', 'Carbohydrates'],
+                 datasets: [{
+                     label: 'Nutritional Values',
+                     data: [
+                         {{ total_calories|default(0) }},
+                         {{ total_protein|default(0) }},
+                         {{ total_fat|default(0) }},
+                         {{ total_carbohydrates|default(0) }}
+                     ],
+                     backgroundColor: [
+                         'rgba(255, 99, 132, 0.6)',
+                         'rgba(54, 162, 235, 0.6)',
+                         'rgba(255, 206, 86, 0.6)',
+                         'rgba(75, 192, 192, 0.6)'
+                     ],
+                     borderColor: [
+                         'rgba(255, 99, 132, 1)',
+                         'rgba(54, 162, 235, 1)',
+                         'rgba(255, 206, 86, 1)',
+                         'rgba(75, 192, 192, 1)'
+                     ],
+                     borderWidth: 1
+                 }]
+             },
+             options: {
+                 responsive: true,
+                 plugins: {
+                     legend: {
+                         position: 'top',
+                     },
+                     tooltip: {
+                         callbacks: {
+                             label: function(tooltipItem) {
+                                 return tooltipItem.label + ': ' + tooltipItem.raw + (tooltipItem.label === 'Calories' ? ' cal' : ' g');
+                             }
+                         }
+                     }
+                 }
+             }
+         });
+     </script>
+ </body>
+ </html>
+ -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutritional Value</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Nutritional Value Analysis</h1>
+        <form method="POST">
+            <div class="form-group">
+                <label for="input_text">Enter Food Item (e.g., 1 cup of milk):</label>
+                <input type="text" name="input_text" id="input_text" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Analyze</button>
+        </form>
+
+        {% if nutritional_info %}
+        <h2 class="mt-4">Nutritional Information for "{{ input_text }}"</h2>
+        <table class="table table-bordered mt-3">
+            <thead>
+                <tr>
+                    <th>Nutrient</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Calories</td>
+                    <td>{{ nutritional_info.calories }}</td>
+                </tr>
+                <tr>
+                    <td>Protein (g)</td>
+                    <td>{{ nutritional_info.protein }}</td>
+                </tr>
+                <tr>
+                    <td>Fat (g)</td>
+                    <td>{{ nutritional_info.fat }}</td>
+                </tr>
+                <tr>
+                    <td>Carbohydrates (g)</td>
+                    <td>{{ nutritional_info.carbohydrates }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Nutritional Breakdown</h3>
+        <canvas id="nutritionChart" width="400" height="400"></canvas>
+        <script>
+            const ctx = document.getElementById('nutritionChart').getContext('2d');
+            const nutritionChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Calories', 'Protein', 'Fat', 'Carbohydrates'],
+                    datasets: [{
+                        label: 'Nutritional Value',
+                        data: [
+                            {{ nutritional_info.calories }},
+                            {{ nutritional_info.protein }},
+                            {{ nutritional_info.fat }},
+                            {{ nutritional_info.carbohydrates }}
+                        ],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Nutritional Breakdown'
+                        }
+                    }
+                }
+            });
+        </script>
+        {% endif %}
+    </div>
+</body>
+</html>

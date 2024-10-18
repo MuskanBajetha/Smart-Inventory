@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <title>Shopping List</title>
+    <style>
+        body {
+            background-color: #f9f9f9;
+            font-family: 'Arial', sans-serif;
+        }
+
+
+        .sidebar {
+            height: 100%;
+            width: 250px; /* Sidebar width */
+            position: fixed;
+            top: 0;
+            left: -250px; /* Hide sidebar */
+            background-color: #00796b; /* Sidebar background color */
+            overflow-x: hidden;
+            transition: 0.5s; /* Transition effect */
+            padding-top: 60px;
+        }
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 1.1em;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #004d40; /* Sidebar link hover color */
+        }
+        .open-btn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #007bff; /* Button color */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .main-content {
+            margin-left: 10px;
+            padding: 20px;
+        }
+
+
+
+        .modal-header, .modal-footer {
+            background-color: #007bff;
+            color: white;
+        }
+
+        
+        .container {
+            margin-top: 30px;
+            border-radius: 15px;
+            background-color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            color: #ff4d4d;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+
+        .btn-primary {
+            background-color: #ff4d4d;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #ff1a1a;
+        }
+
+        .table {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .table th, .table td {
+            border: 0px solid #ff4d4d;
+            padding: 10px;
+        }
+
+        .table th {
+            background-color: #ffcccc;
+            color: #ff4d4d;
+        }
+
+        .table tr:hover {
+            background-color: #ffe6e6;
+        }
+
+        .done {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+        .form-control {
+            border-radius: 20px;
+        }
+
+        .btn-filter {
+            margin-left: 10px;
+        }
+
+        .action-button {
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar" class="sidebar">
+        <a href="#" onclick="toggleSidebar()"> |☰| &times;</a>
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        <a href="/expired_products">Expired Products</a>
+        <a href="/near_expiry">Products Near Expiry</a>
+        <a href="/shopping_list">Shopping List</a>
+    </div>
+
+    <div id="main" class="main-content">
+        <button class="open-btn" onclick="toggleSidebar()">☰ </button>
+        {% block content %}{% endblock %}
+    </div>
+    
+    <div class="container">
+        <h1 class="mt-5">Shopping List</h1>
+
+        <div class="d-flex justify-content-between mb-3">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addItemModal">
+                <i class="fas fa-plus"></i>
+            </button>
+
+
+            <button class="btn btn-outline-primary" data-toggle="modal" data-target="#barcodeModal">
+                <i class="fas fa-barcode"></i> Scan Item
+            </button>
+
+
+            
+            
+            <input type="text" id="search-input" class="form-control w-50" placeholder="Search for items..." onkeyup="filterItems()">
+            <button class="btn btn-primary btn-filter" onclick="alert('Filter functionality to be implemented!')">
+                <i class="fas fa-filter"></i>
+            </button>
+        </div>
+
+        <!-- Add Item Modal -->
+        <div class="modal fade" id="addItemModal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addItemModalLabel">Add Item to Shopping List</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="add-item-form">
+                            <div class="form-group">
+                                <label for="item-name">Item Name</label>
+                                <input type="text" class="form-control" id="item-name" name="item_name" placeholder="Enter item name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantity">Quantity</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" placeholder="Enter quantity" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="unit">Unit</label>
+                                <input type="text" class="form-control" id="unit" name="unit" placeholder="Enter unit (e.g., kg, pcs)" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Item</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Barcode Scanner Modal -->
+        <div class="modal fade" id="barcodeModal" tabindex="-1" role="dialog" aria-labelledby="barcodeModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="barcodeModalLabel">Scan Barcode</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="scanner" style="width: 100%; height: 300px;"></div> <!-- Scanner area -->
+                        <input type="hidden" id="barcodeInput" name="barcode">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Product Modal -->
+        <div class="modal fade" id="newProductModal" tabindex="-1" role="dialog" aria-labelledby="newProductModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newProductModalLabel">Add New Product</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="newProductForm">
+                            <input type="hidden" id="barcodeInput" name="barcode">
+                            <div class="form-group">
+                                <label for="itemNameInput">Product Name</label>
+                                <input type="text" id="itemNameInput" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantityInput">Quantity</label>
+                                <input type="number" id="quantityInput" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="unitInput">Unit</label>
+                                <input type="text" id="unitInput" class="form-control" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveNewProduct">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quantity and Unit Modal (New) -->
+        <div class="modal fade" id="quantityModal" tabindex="-1" role="dialog" aria-labelledby="quantityModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="quantityModalLabel">Enter Quantity and Unit</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="quantityForm">
+                            <input type="hidden" id="barcodeInput" name="barcode">
+                            <div class="form-group">
+                                <label for="quantityInput">Quantity</label>
+                                <input type="number" id="quantityInput" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="unitInput">Unit</label>
+                                <input type="text" id="unitInput" class="form-control" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveQuantity">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- New scanned Product Modal -->
+        <!-- <div class="modal fade" id="newProductModal" tabindex="-1" role="dialog" aria-labelledby="newProductModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="newProductModalLabel">Add New Product</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="newProductForm">
+                            <input type="hidden" id="barcodeInput" name="barcode">
+                            <div class="form-group">
+                                <label for="itemNameInput">Product Name</label>
+                                <input type="text" id="itemNameInput" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="quantityInput">Quantity</label>
+                                <input type="number" id="quantityInput" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="unitInput">Unit</label>
+                                <input type="text" id="unitInput" class="form-control" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="saveNewProduct">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+ -->
+
+
+
+        
+
+        
+
+        <h2 class="mt-5">Items</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    
+                    <th>Actions</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                </tr>
+            </thead>
+            <tbody id="items-table">
+                {% for item in items %}
+                <tr id="item-{{ loop.index }}" class="{% if item[3] == 'done' %}done{% endif %}">
+                    <td>
+                        <button class="action-button" onclick="markAsDone({{ loop.index }})">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <!-- <button class="action-button" onclick="editItem({{ loop.index }})">
+                            <i class="fas fa-edit"></i>
+                        </button> -->
+                        
+                        <button class="action-button" onclick="deleteItem('{{ item[1] | escape }}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+
+                        <button class="action-button" onclick="showExpiryModal('{{ item[1] }}', '{{ item[2] }}', '{{ item[3] }}')">
+                            <i class="fas fa-plus" style="color: #000000;"></i>
+                        </button>
+
+                        <button class="action-button" onclick="viewDetails({{ loop.index }})">
+                            <i class="fas fa-info-circle"></i>
+                           
+                        </button>
+                    </td>
+                    <td>{{ item[1] }}</td>
+                    <td>{{ item[2] }}</td>
+                    <td>{{ item[3] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        
+        <div id="message" class="message"></div>
+
+            <!-- Expiry Date Modal -->
+            <div class="modal fade" id="expiryModal" tabindex="-1" aria-labelledby="expiryModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="expiryModalLabel">Enter Expiry Date</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="expiry-form">
+                                <input type="hidden" id="item-name" name="item_name">
+                                <input type="hidden" id="item-quantity" name="quantity">
+                                <input type="hidden" id="item-unit" name="unit">
+                                <div class="form-group">
+                                    <label for="expiry-date">Expiry Date</label>
+                                    <input type="date" class="form-control" id="expiry-date" name="expiry_date" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Add to Stock</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+    
+    
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            if (sidebar.style.left === "-250px") {
+                sidebar.style.left = "0";
+            } else {
+                sidebar.style.left = "-250px";
+            }
+        }
+    
+
+    </script>
+    
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+
+    <script>
+
+
+
+        $(document).ready(function() {
+            $('#barcodeModal').on('shown.bs.modal', function () {
+                Quagga.init({
+                    inputStream: {
+                        name: "Live",
+                        type: "LiveStream",
+                        target: document.querySelector('#scanner'),
+                        constraints: {
+                            facingMode: "environment"
+                        }
+                    },
+                    decoder: {
+                        readers: ["code_128_reader", "ean_reader", "ean_8_reader", "code_39_reader", "code_39_vin_reader", "upc_reader", "upc_e_reader", "i2of5_reader", "2of5_reader"]
+                    },
+                    locate: true
+                }, function(err) {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    Quagga.start();
+                });
+
+                Quagga.onDetected(function(data) {
+                    var code = data.codeResult.code;
+                    $('#barcodeInput').val(code); // Place detected code in the input field
+
+                    // Stop the scanner
+                    Quagga.stop(); 
+
+                    // Check if the barcode exists in the database
+                    $.post('/check_barcode', { barcode: code }, function(response) {
+                        if (response.exists) {
+                            // Populate item details if exists
+                            $('#itemNameInput').val(response.item_name); // Populate item name
+                            // Show the modal to enter quantity and unit
+                            $('#quantityModal').modal('show');
+                        } else {
+                            // Show modal to add new product
+                            $('#newProductModal').modal('show');
+                        }
+
+                        // Hide the barcode modal after processing
+                        $('#barcodeModal').modal('hide'); 
+                    });
+                });
+            });
+
+            $('#barcodeModal').on('hidden.bs.modal', function () {
+                Quagga.stop();
+            });
+
+            // Save the new product from the new product modal
+            $('#saveNewProduct').click(function() {
+                var barcode = $('#barcodeInput').val();
+                var itemName = $('#itemNameInput').val();
+                var quantity = $('#quantityInput').val();
+                var unit = $('#unitInput').val();
+
+                // Add your AJAX call to save the new product here
+                $.post('/add_product', { barcode: barcode, name: itemName, quantity: quantity, unit: unit }, function(response) {
+                    if (response.success) {
+                        alert('Product added successfully!');
+                        $('#newProductModal').modal('hide');
+                        // Optionally refresh the shopping list or clear inputs
+                    } else {
+                        alert('Error adding product. Please try again.');
+                    }
+                });
+            });
+        });
+
+        
+
+
+
+
+        
+        function markAsDone(index) {
+            const itemRow = document.getElementById('item-' + index);
+            itemRow.classList.toggle('done');
+            itemRow.style.opacity = itemRow.classList.contains('done') ? '0.5' : '1';
+
+            // Update the database (this part requires backend implementation)
+            $.post('/update_item_status', { index: index, status: itemRow.classList.contains('done') ? 'done' : 'not_done' });
+        }
+
+        function filterItems() {
+            const input = document.getElementById('search-input');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('items-table');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const cells = rows[i].getElementsByTagName('td');
+                let found = false;
+                for (let j = 0; j < cells.length; j++) {
+                    if (cells[j]) {
+                        const txtValue = cells[j].textContent || cells[j].innerText;
+                        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                rows[i].style.display = found ? "" : "none";
+            }
+        }
+
+        $(document).ready(function() {
+            $(document).on('submit', '#add-item-form', function(e) {
+                e.preventDefault();
+                $.post('/add_item', $(this).serialize(), function(data) {
+                    $('#addItemModal').modal('hide');  // Hide the modal
+                    location.reload();  // Refresh the page to see the new item
+                    alert(data.message);  // Show success message
+                });
+            });
+        });
+
+
+
+        function updateStatus(itemName, status) {
+            $.ajax({
+                type: 'POST',
+                url: '/update_item_status',
+                data: { item_name: itemName, status: status },
+                success: function(response) {
+                    alert(response.message);
+                    location.reload();
+                }
+            });
+        }
+
+        function deleteItem(item_name) {
+            console.log(item_name)
+            $.ajax({
+                type: 'POST',
+                url: '/delete_item',
+                data: { item_name: item_name },
+                success: function(response) {
+                    alert(response.message);
+                    location.reload();  // Reload the page to see the updated list
+                }
+            });
+        }
+
+
+
+        function showExpiryModal(itemName, quantity, unit) {
+            $('#item-name').val(itemName);
+            $('#item-quantity').val(quantity);
+            $('#item-unit').val(unit);
+            $('#expiryModal').modal('show');
+        }
+
+        $(document).ready(function() {
+            $(document).on('submit', '#expiry-form', function(e) {
+                e.preventDefault();
+                const itemName = $('#item-name').val();
+                const quantity = $('#item-quantity').val();
+                const unit = $('#item-unit').val();
+                const expiryDate = $('#expiry-date').val();
+
+                $.post('/add_item_to_stock', {
+                    item_name: itemName,
+                    quantity: quantity,
+                    unit: unit,
+                    expiry_date: expiryDate
+                }, function(data) {
+                    $('#expiryModal').modal('hide');  // Hide the modal
+                    $('#message').text(data.message);  // Show success message
+                    location.reload(); // Refresh the page to see the changes
+                });
+            });
+        });
+
+
+        
+        // // Placeholder functions for the other buttons
+        // function editItem(index) {
+        //     alert('Edit functionality not implemented for item ' + index);
+        // }
+
+        // function deleteItem(index) {
+        //     alert('Delete functionality not implemented for item ' + index);
+        // }
+
+        function viewDetails(index) {
+            alert('View details functionality not implemented for item ' + index);
+        }
+    </script>
+</body>
+</html>

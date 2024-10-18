@@ -1,0 +1,87 @@
+body {
+  font-family: 'Inter', sans-serif; /* Change to a more modern font */
+  background-color: #f7f7f7; /* Light background for contrast */
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  background: white;
+  padding: 30px; /* Increased padding for a spacious feel */
+  border-radius: 10px; /* Rounded corners for a softer look */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* More pronounced shadow for depth */
+}
+
+
+.dropdown-menu {
+    z-index: 1050; /* Bootstrap's dropdowns usually use this z-index */
+}
+
+
+.refresh-icon {
+    width: 24px;  /* Set your desired width */
+    height: auto; /* Maintain aspect ratio */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    position: relative; /* Positioning */
+    margin: 0; /* Remove default margin */
+    padding: 20px;
+    top: 20px; /* Adjust as needed */
+    right: 20px; /* Adjust as needed */
+}
+
+
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px; /* Spacing below the heading */
+  font-weight: 600; /* Bolder font for emphasis */
+  color: #333; /* Darker color for better readability */
+  font-size: 2.5rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin: 10px 0 5px;
+  font-weight: 500; /* Slightly bolder label text */
+  color: #555; /* Softer color for labels */
+}
+
+input, select {
+  padding: 12px; /* Increased padding for inputs */
+  margin-bottom: 15px; /* Increased spacing between elements */
+  border: 1px solid #ddd; /* Light border for input fields */
+  border-radius: 5px; /* Rounded corners */
+  transition: border-color 0.3s; /* Smooth border color transition */
+}
+
+input:focus, select:focus {
+  border-color: #007bff; /* Highlight border on focus */
+  outline: none; /* Remove default outline */
+}
+
+button {
+  padding: 12px;
+  margin-top: 10px; /* Space above the button */
+  background-color: #28a745; /* Green background */
+  color: white;
+  border: none;
+  border-radius: 5px; /* Rounded button */
+  cursor: pointer;
+  transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+button:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 30px; /* Increased margin a
+

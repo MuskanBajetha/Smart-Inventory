@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Product Overview</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Overview of {{ product[1] }}</h1> <!-- Assuming product[1] is the name -->
+        <table class="table">
+            <tr>
+                <th>ID</th>
+                <td>{{ product[0] }}</td> <!-- Assuming product[0] is the ID -->
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ product[1] }}</td> <!-- Product name -->
+            </tr>
+            <tr>
+                <th>Total Quantity</th>
+                <td>{{ product[2] }}</td> <!-- Total quantity -->
+            </tr>
+            <tr>
+                <th>Unit</th>
+                <td>{{ product[3] }}</td> <!-- Unit -->
+            </tr>
+            <tr>
+                <th>Expiry Date</th>
+                <td>{{ product[4] }}</td> <!-- Expiry date -->
+            </tr>
+            <tr>
+                <th>Marked as Open</th>
+                <td>{{ product[5] }}</td> <!-- Marked as open count -->
+            </tr>
+        </table>
+        <a href="/products" class="btn btn-secondary">Back to Products</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

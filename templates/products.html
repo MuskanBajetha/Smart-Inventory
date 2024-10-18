@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+
+    
+    <title>Products</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+            padding: 20px;
+        }
+
+
+        .sidebar {
+            height: 100%;
+            width: 250px; /* Sidebar width */
+            position: fixed;
+            top: 0;
+            left: -250px; /* Hide sidebar */
+            background-color: #00796b; /* Sidebar background color */
+            overflow-x: hidden;
+            transition: 0.5s; /* Transition effect */
+            padding-top: 60px;
+        }
+        .sidebar a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 1.1em;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #004d40; /* Sidebar link hover color */
+        }
+        .open-btn {
+            font-size: 20px;
+            cursor: pointer;
+            background-color: #007bff; /* Button color */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        .main-content {
+            margin-left: 10px;
+            padding: 20px;
+        }
+
+
+        h1 {
+            text-align: left;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .modal-header {
+            border-bottom: none;
+        }
+        .table {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .btn {
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar" class="sidebar">
+        <a href="#" onclick="toggleSidebar()"> |☰| &times;</a>
+        <a href="/">Home</a>
+        <a href="/products">Products</a>
+        <a href="/expired_products">Expired Products</a>
+        <a href="/near_expiry">Products Near Expiry</a>
+        <a href="/shopping_list">Shopping List</a>
+    </div>
+
+    <div id="main" class="main-content">
+        <button class="open-btn" onclick="toggleSidebar()">☰ </button>
+        {% block content %}{% endblock %}
+    </div>
+
+        
+        
+    <style>
+        body {
+            position: relative;
+            margin: 0;
+            padding: 20px;
+        }
+        .refresh-icon {
+            cursor: pointer; 
+            position: absolute; 
+            top: 142px;  
+            right: 310px; 
+            font-size: 22px; /* Adjust size as needed */
+            color: #007bff; /* Customize color */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <i class="fas fa-sync refresh-icon" onclick="location.reload();"></i>
+
+        
+        <h1>Product Inventory</h1>
+        <div class="text-left mb-3">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">Add Items</button>
+            <a href="/expired_products" class="btn btn-warning">View Expired Products</a>
+            <a href="/near_expiry" class="btn btn-info">View Products Due Within Next 3 Days</a>
+        </div>
+
+        <table id="productsTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Total Quantity</th>
+                    <th>Unit</th>
+                    <th>Expiry Date</th>
+                    <th>Marked as Open</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="productsBody">
+                {% for product in products %}
+                <tr>
+                    <td>{{ product[1] }}</td>
+                    <td id="quantity-{{ product[0] }}">{{ product[2] }}</td>
+                    <td>{{ product[3] }}</td>
+                    <td>{{ product[4] }}</td>
+                    <td id="marked-open-{{ product[0] }}">{{ product[5] }}</td>
+                    <td>
+                        <button class="btn btn-danger consume-btn" data-id="{{ product[0] }}" title="Consume 1 Pack">
+                            <i class="fas fa-utensils"></i>
+                        </button>
+                        <button class="btn btn-warning consume-all-btn" data-id="{{ product[0] }}" title="Consume All in Stock">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        <button class="btn btn-info mark-open-btn" data-id="{{ product[0] }}" title="Mark 1 Item as Open">
+                            <i class="fas fa-box-open"></i>
+                        </button>
+                        <div class="dropdown d-inline">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/recipe/{{ product[0] }}">Recipe</a>
+                                <a class="dropdown-item" href="/overview/{{ product[0] }}">Overview</a>
+                                <a class="dropdown-item" href="/nutritional_value/{{ product[0] }}">Nutritional Value</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="addProductForm">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="name">Product Name:</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="total_quantity">Total Quantity:</label>
+                                <input type="number" class="form-control" id="total_quantity" name="total_quantity" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="unit">Unit:</label>
+                                <select class="form-control" id="unit" name="unit" required>
+                                    <option value="kg">kg</option>
+                                    <option value="packs">packs</option>
+                                    <option value="litres">litres</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="expiry_date">Expiry Date:</label>
+                                <input type="date" class="form-control" id="expiry_date" name="expiry_date" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Product</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        
+        <a href="/" class="btn btn-secondary mt-3">Back to Home</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+
+
+
+        function toggleSidebar() {
+            var sidebar = document.getElementById("sidebar");
+            if (sidebar.style.left === "-250px") {
+                sidebar.style.left = "0";
+            } else {
+                sidebar.style.left = "-250px";
+            }
+        }
+    
+
+
+
+
+
+        
+        $(document).ready(function() {
+            $('#productsTable').DataTable();
+
+            $('#addProductForm').on('submit', function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '/add_product',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            const newRow = `<tr>
+                                <td>${$('#name').val()}</td>
+                                <td id="quantity-${response.id}">${$('#total_quantity').val()}</td>
+                                <td>${$('#unit').val()}</td>
+                                <td>${$('#expiry_date').val()}</td>
+                                <td id="marked-open-${response.id}">0</td>
+                                <td>
+                                    <button class="btn btn-danger consume-btn" data-id="${response.id}" title="Consume 1 Pack">
+                                        <i class="fas fa-utensils"></i>
+                                    </button>
+                                    <button class="btn btn-warning consume-all-btn" data-id="${response.id}" title="Consume All in Stock">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                    <button class="btn btn-info mark-open-btn" data-id="${response.id}" title="Mark 1 Item as Open">
+                                        <i class="fas fa-box-open"></i>
+                                    </button>
+                                    <div class="dropdown d-inline-block">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton${response.id}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton${response.id}">
+                                            <a class="dropdown-item" href="/recipe/${response.id}">Recipe</a>
+                                            <a class="dropdown-item" href="/overview/${response.id}">Overview</a>
+                                            <a class="dropdown-item" href="/nutritional_value/${response.id}">Nutritional Value</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>`;
+                            $('#productsBody').append(newRow);
+                            $('#addProductForm')[0].reset();
+                            $('#addProductModal').modal('hide');
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click', '.consume-btn', function() {
+                const productId = $(this).data('id');
+                $.ajax({
+                    type: 'POST',
+                    url: `/consume/${productId}`,
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            const updatedProduct = response.product;
+                            $(`#quantity-${updatedProduct[0]}`).text(updatedProduct[2]);
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click', '.consume-all-btn', function() {
+                const productId = $(this).data('id');
+                $.ajax({
+                    type: 'POST',
+                    url: `/consume_all/${productId}`,
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            const updatedProduct = response.product;
+                            $(`#quantity-${updatedProduct[0]}`).text(0);
+                            $(`#marked-open-${updatedProduct[0]}`).text(0);
+                        }
+                    }
+                });
+            });
+
+            $(document).on('click', '.mark-open-btn', function() {
+                const productId = $(this).data('id');
+                $.ajax({
+                    type: 'POST',
+                    url: `/mark_open/${productId}`,
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            const updatedProduct = response.product;
+                            $(`#quantity-${updatedProduct[0]}`).text(updatedProduct[2]);
+                            $(`#marked-open-${updatedProduct[0]}`).text(updatedProduct[5]);
+                        }
+                    }
+                });
+            });   
+        });
+    </script>
+</body>
+</html>
