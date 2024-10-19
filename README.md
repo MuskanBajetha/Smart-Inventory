@@ -13,4 +13,4 @@ Open the repository in the [Replit Code Editor](https://replit.com) and run the 
 |------|
 |[Saara](https://github.com/I-Saara)|
 |[Muskan Bajetha](https://github.com/MuskanBajetha)|
-|[Shreya Singh](https://github.com/Shreyy0)|
+|[Shreya Singh](https://github.com/shreyy02)|
