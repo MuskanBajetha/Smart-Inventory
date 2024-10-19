@@ -11,4 +11,6 @@ Open the repository in the [Replit Code Editor](https://replit.com) and run the 
 ## Team Members
 | Name |
 |------|
+|[Saara](https://github.com/I-Saara)|
 |[Muskan Bajetha](https://github.com/MuskanBajetha)|
+|[Shreya Singh](https://github.com/Shreyy0)|
